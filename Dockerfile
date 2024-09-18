@@ -1,5 +1,9 @@
 FROM ubuntu:20.04
 
+# 设置时区为Asia/Shanghai
+ENV TZ=Asia/Shanghai
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
 # 安装必要的依赖
 RUN apt-get update && apt-get install -y \
     python3 \
