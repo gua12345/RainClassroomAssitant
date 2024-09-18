@@ -96,10 +96,11 @@ def get_config_path():
     return config_route
 
 def get_config_dir():
-    # 获取配置文件所在文件夹
-    appdata_route = os.environ['APPDATA']
-    dir_route = appdata_route + "\\RainClassroomAssistant"
-    return dir_route
+    if os.name == 'nt':  # Windows
+        appdata_route = os.environ['APPDATA']
+    else:  # Linux or other Unix-like systems
+        appdata_route = os.path.join(os.environ['HOME'], '.config')
+    return appdata_route
 
 def get_user_info(sessionid):
     # 获取用户信息
