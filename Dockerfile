@@ -10,21 +10,35 @@ RUN apt-get update && apt-get install -y \
     python3-pip \
     python3-pyqt5 \
     libgl1-mesa-glx \
-    xvfb
+    xvfb \
+    tigervnc-standalone-server \
+    tigervnc-common \
+    git \
+    wget
 
 # 复制项目文件到容器中
 COPY . /app
 WORKDIR /app
 
-#单独安装pyqt5
-RUN apt-get update 
-RUN apt install python3-pyqt5 -y
-
 # 安装Python依赖
 RUN pip3 install -r requirements.txt
 
-# 设置环境变量
-ENV DISPLAY=:99
+# 下载并配置 noVNC
+RUN git clone https://github.com/novnc/noVNC.git /opt/noVNC \
+    && git clone https://github.com/novnc/websockify /opt/noVNC/utils/websockify \
+    && ln -s /opt/noVNC/vnc.html /opt/noVNC/index.html
 
-# 启动虚拟显示并运行项目
-CMD ["xvfb-run", "python3", "RainClassroomAssistant.py"]
+# 设置 VNC 密码
+RUN mkdir -p ~/.vnc \
+    && echo "yourpassword" | vncpasswd -f > ~/.vnc/passwd \
+    && chmod 600 ~/.vnc/passwd
+
+# 启动脚本
+COPY startup.sh /opt/startup.sh
+RUN chmod +x /opt/startup.sh
+
+# 暴露端口
+EXPOSE 5901 6080
+
+# 启动 VNC 和 noVNC
+CMD ["/opt/startup.sh"]
