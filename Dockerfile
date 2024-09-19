@@ -18,7 +18,7 @@ WORKDIR /app
 
 #单独安装pyqt5
 RUN apt-get update 
-RUN apt install python3-pyqt5
+RUN apt install python3-pyqt5 -y
 
 # 安装Python依赖
 RUN pip3 install -r requirements.txt
