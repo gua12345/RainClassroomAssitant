@@ -50,6 +50,8 @@ jobs:
 
     - name: Build APK
       run: |
+        export ANDROID_HOME=$HOME/.buildozer/android/platform
+        export PATH=$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/30.0.3:$PATH
         buildozer android debug
 
     - name: Upload APK
