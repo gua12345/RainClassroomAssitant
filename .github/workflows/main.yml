@@ -35,6 +35,7 @@ jobs:
         wget https://dl.google.com/android/repository/commandlinetools-linux-7583922_latest.zip -O commandlinetools.zip
         mkdir -p cmdline-tools/latest
         unzip commandlinetools.zip -d cmdline-tools/latest
+        mv cmdline-tools/latest/cmdline-tools/* cmdline-tools/latest/ # Fix the folder structure
         export ANDROID_HOME=$HOME/.buildozer/android/platform
         export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$PATH
         yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_HOME "platform-tools" "platforms;android-30" "build-tools;30.0.3"
