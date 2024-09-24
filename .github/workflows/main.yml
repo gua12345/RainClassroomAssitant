@@ -28,10 +28,36 @@ jobs:
         pip install --upgrade pip
         pip install buildozer cython
 
+    - name: Install Android SDK
+      run: |
+        mkdir -p $HOME/.buildozer/android/platform
+        cd $HOME/.buildozer/android/platform
+        wget https://dl.google.com/android/repository/commandlinetools-linux-7583922_latest.zip -O commandlinetools.zip
+        mkdir -p cmdline-tools/latest
+        unzip commandlinetools.zip -d cmdline-tools/latest
+        mv cmdline-tools/latest/cmdline-tools/* cmdline-tools/latest/ # 调整目录结构
+        export ANDROID_HOME=$HOME/.buildozer/android/platform
+        export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$PATH
+        yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_HOME "platform-tools" "platforms;android-30" "build-tools;30.0.3" "extras;android;m2repository" "cmdline-tools;latest" "tools"
+
+    - name: Set up environment for build tools
+      run: |
+        export ANDROID_HOME=$HOME/.buildozer/android/platform
+        export PATH=$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/30.0.3:$PATH
+        echo "Android SDK Path: $ANDROID_HOME"
+        echo "Build tools path: $ANDROID_HOME/build-tools/30.0.3"
+        ls $ANDROID_HOME/build-tools/30.0.3
+
+    - name: Modify buildozer.spec for correct SDK path
+      run: |
+        sed -i 's|^android.sdk =.*|android.sdk = /home/runner/.buildozer/android/platform|' buildozer.spec
+        sed -i 's|^android.build_tools_version =.*|android.build_tools_version = 30.0.3|' buildozer.spec
+
     - name: Build APK
       run: |
-        buildozer android deploy run
-
+        export ANDROID_HOME=$HOME/.buildozer/android/platform
+        export PATH=$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/30.0.3:$PATH
+        buildozer android debug
 
     - name: Upload APK
       uses: actions/upload-artifact@v3
