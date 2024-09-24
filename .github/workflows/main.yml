@@ -38,6 +38,10 @@ jobs:
         export PATH=$ANDROID_HOME/cmdline-tools/cmdline-tools/bin:$PATH
         yes | $ANDROID_HOME/cmdline-tools/cmdline-tools/bin/sdkmanager --sdk_root=$ANDROID_HOME "platform-tools" "platforms;android-30" "build-tools;30.0.3"
 
+    - name: Install AIDL
+      run: |
+        yes | $ANDROID_HOME/cmdline-tools/cmdline-tools/bin/sdkmanager --sdk_root=$ANDROID_HOME "build-tools;30.0.3"
+
     - name: Build APK
       run: |
         buildozer android debug
