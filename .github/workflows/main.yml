@@ -33,10 +33,11 @@ jobs:
         mkdir -p $HOME/.buildozer/android/platform
         cd $HOME/.buildozer/android/platform
         wget https://dl.google.com/android/repository/commandlinetools-linux-7583922_latest.zip -O commandlinetools.zip
-        unzip commandlinetools.zip -d cmdline-tools
+        mkdir -p cmdline-tools/latest
+        unzip commandlinetools.zip -d cmdline-tools/latest
         export ANDROID_HOME=$HOME/.buildozer/android/platform
-        export PATH=$ANDROID_HOME/cmdline-tools/bin:$PATH
-        yes | $ANDROID_HOME/cmdline-tools/bin/sdkmanager --sdk_root=$ANDROID_HOME "platform-tools" "platforms;android-30" "build-tools;30.0.3"
+        export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$PATH
+        yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_HOME "platform-tools" "platforms;android-30" "build-tools;30.0.3"
 
     - name: Build APK
       run: |
