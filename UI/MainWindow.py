@@ -13,6 +13,7 @@ from UI.Login import Login_Ui
 from UI.Config import Config_Ui
 from Scripts.Utils import *
 from Scripts.Monitor import monitor
+from Scripts.Send import send_group_message
 import os
 import json
 import datetime
@@ -165,13 +166,17 @@ class MainWindow_Ui(QtCore.QObject):
         self.config = self.check_config(dir_route, config_route)
 
         self.add_message_signal.emit("当前版本：v0.0.4",0)
+        send_group_message("当前版本：v0.0.4")
         self.add_message_signal.emit("初始化完成",0)
+        send_group_message("初始化完成")
 
         # 登录状态检查
         status, user_info = self.check_login()
         if status:
             self.login_btn.setText("重新登录")
             self.add_message_signal.emit("登录成功，当前登录用户："+user_info["name"],0)
+            meg = "登录成功，当前登录用户："+user_info["name"]
+            send_group_message(meg)
         else:
             self.show_login()
 
@@ -256,9 +261,12 @@ class MainWindow_Ui(QtCore.QObject):
         status, user_info = self.check_login()
         if status and success:
             self.add_message_signal.emit("登录成功，当前登录用户："+user_info["name"],0)
+            meg = "登录成功，当前登录用户："+user_info["name"]
+            send_group_message(meg)
             self.login_btn.setText("重新登录")
         if not status:
             self.show_login(rtn_message="登录失败，请重新登录")
+            send_group_message("登录失败，请重新登录")
         
     def check_config(self, dir_route, config_route):
         # 检查配置文件
@@ -272,18 +280,21 @@ class MainWindow_Ui(QtCore.QObject):
             json.dump(initial_data,f)
             f.close()
             self.add_message_signal.emit("没有检测到配置文件，已自动创建",0)
+            send_group_message("没有检测到配置文件，已自动创建")
             return initial_data
         else:
             try:
                 with open(config_route,"r") as f:
                     data = json.load(f)
                     self.add_message_signal.emit("配置文件已读取",0)
+                    send_group_message("配置文件已读取")
                     return data
             except:
                 with open(config_route,"w+") as f:
                     initial_data = get_initial_data()
                     json.dump(initial_data,f)
                     self.add_message_signal.emit("配置文件读取失败，已重新生成",0)
+                    send_group_message("配置文件读取失败，已重新生成")
                     return initial_data
 
     def check_login(self):
@@ -315,6 +326,7 @@ class MainWindow_Ui(QtCore.QObject):
         self.is_active = True
         self.active_btn.setText("停止监听")
         self.add_message_signal.emit("启动成功",0)
+        send_group_message("摸鱼助手启动成功")
     
     def deactive(self):
         # 停止
@@ -327,6 +339,7 @@ class MainWindow_Ui(QtCore.QObject):
         self.active_btn.setEnabled(True)
         self.active_btn.setText("启动")
         self.add_message_signal.emit("停止成功",0)
+        send_group_message("摸鱼助手停止成功")
 
     def audio(self, message, type):
         '''
