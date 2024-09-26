@@ -18,6 +18,6 @@ if __name__ == "__main__":
     # 设置定时器，105分钟后关闭应用程序
     timer = QtCore.QTimer()
     timer.timeout.connect(close_app)
-    timer.start(105 * 60 * 1000)  # 100分钟转换为毫秒
+    timer.start(105 * 60 * 1000)  # 分钟转换为毫秒
     # 主窗体循环
     app.exec_()
