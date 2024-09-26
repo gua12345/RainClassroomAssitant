@@ -1,7 +1,6 @@
 import sys
 from PyQt5 import QtWidgets, QtCore
 from UI.MainWindow import MainWindow_Ui
-from UI.MainWindow import MainWindow_Ui
 
 def close_app():
     QtWidgets.QApplication.quit()
