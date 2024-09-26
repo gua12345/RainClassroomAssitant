@@ -3,6 +3,8 @@ import requests
 import threading
 from Scripts.Utils import get_on_lesson, test_network
 from Scripts.Classes import Lesson
+from Scripts.Send import send_group_message
+
 
 def monitor(main_ui):
     # 监听器函数
@@ -24,6 +26,7 @@ def monitor(main_ui):
             # lesson_list_old = get_on_lesson_old()
         except requests.exceptions.ConnectionError:
             meg = "网络异常，监听中断"
+            send_group_message(meg)
             main_ui.add_message_signal.emit(meg,8)
             network_status = False
         except Exception:
@@ -40,6 +43,7 @@ def monitor(main_ui):
                 else:
                     network_status = True
                     meg = "网络已恢复，监听开始"
+                    send_group_message(meg)
                     main_ui.add_message_signal.emit(meg,8)
                     break
             # 可结束线程的计时器
@@ -62,6 +66,7 @@ def monitor(main_ui):
                 thread = threading.Thread(target=lesson_obj.start_lesson,args=(del_onclass,),daemon=True)
                 thread.start()
                 meg = "检测到课程%s正在上课，已加入监听列表" % lessonname
+                send_group_message(meg)
                 main_ui.add_message_signal.emit(meg,7)
                 on_lesson_list.append(lesson_obj)
         
